@@ -41,7 +41,7 @@ function LoginAndRegister() {
 
       console.log("Auth response:", response.data);
 
-      navigate('/dashboard');
+      navigate('/videos');
     } catch (error) {
       console.error('Error:', error);
       alert(error.response?.data?.message || 'Something went wrong');
