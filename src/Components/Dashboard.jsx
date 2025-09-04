@@ -1,11 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import FullnameAndEmailForm from './Forms/FullnameAndEmailForm.jsx';
+import UpdateAccount from './Button/UpdateAccount.jsx';
+import CoverForm from './Forms/CoverForm.jsx';
+import AvatarForm from './Forms/AvatarForm.jsx';
 
 function Dashboard() {
   const [data, setData] = useState(null);
   const [videoData, setVideoData] = useState([]);
+  const [tweetData, setTweetData] = useState([]);
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [showTweetForm, setShowTweetForm] = useState(false);
+  const [tweet, setTweet] = useState({ content: '' });
+  const [newTweet, setNewTweet] = useState({ content: '' });
+  const [editContent, setEditContent] = useState('');
+  const [editingTweet, setEditingTweet] = useState(null);
+  const [selectionForm,setSelectionForm] = useState(null);
+  const [activeForm, setActiveForm] = useState(null);
+
+  const closeForm = () => setActiveForm(null);
 
   const [form, setForm] = useState({
     title: '',
@@ -52,8 +66,38 @@ function Dashboard() {
     }
   };
 
+  // Fetch My Tweets
+  const fetchTweets = async () => {
+    let userId = null;
+    try {
+      const res = await axios.get(`http://localhost:8000/api/v1/users/current-user`, {
+        withCredentials: true,
+      });
+      const user = res.data;
+      userId = user?.data?._id;
+      if (!userId) return console.error("User ID not found in response");
+      console.log("Current User ID:", userId);
+    } catch (error) {
+      return console.error("Error fetching current user:", error);
+    }
+
+    try {
+      const response = await axios.get(`http://localhost:8000/api/v1/tweets/user/${userId}`, {
+        withCredentials: true,
+      });
+
+      const tweets = response.data?.data || [];
+      setTweetData(tweets);
+    } catch (error) {
+      console.log("Error fetching tweets:", error);
+    }
+  };
+
+
+
   useEffect(() => {
     fetchVideos();
+    fetchTweets();
   }, []);
 
   // Fullscreen Video
@@ -63,7 +107,6 @@ function Dashboard() {
     }
   };
 
-  // Upload Form Handlers
   const handleChange = (e) => {
     const { name, files, value } = e.target;
     setForm((prev) => ({
@@ -99,7 +142,6 @@ function Dashboard() {
     }
   };
 
-  // Delete Video
   const handleDelete = async (videoId) => {
     try {
       await axios.delete(`http://localhost:8000/api/v1/videos/${videoId}`, {
@@ -115,10 +157,8 @@ function Dashboard() {
     }
   };
 
-  // Update Video
   const handleUpdate = async (e) => {
     e.preventDefault();
-
     const formData = new FormData();
     formData.append('title', updateForm.title);
     formData.append('description', updateForm.description);
@@ -144,6 +184,54 @@ function Dashboard() {
     }
   };
 
+  const handleTweetSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(
+        'http://localhost:8000/api/v1/tweets/',
+        { content: tweet.content },
+        {
+          withCredentials: true,
+        }
+      );
+      alert("Tweet posted successfully!");
+      setShowTweetForm(false);
+      setTweet({ content: '' });
+      fetchTweets(); // refresh
+    } catch (error) {
+      console.log("Error : ", error);
+      alert("Tweet failed!");
+    }
+  };
+
+  const handleTweetChange = (e) => {
+    setTweet((prev) => ({
+      ...prev,
+      content: e.target.value,
+    }));
+  }
+
+  
+
+
+  useEffect(() => {
+    fetchTweets();
+  }, [])
+  const handleDeleteTweet = async (id) => {
+    try {
+      await axios.delete(`http://localhost:8000/api/v1/tweets/${id}`,
+        {
+          withCredentials: true
+        }
+      )
+      setTweetData((prev) => prev.filter((t) => t._id !== id))
+      alert("Tweet Deleted Successfully!!")
+    } catch (error) {
+      console.log("Error : ", error)
+    }
+  }
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-950 via-blue-900 to-blue-800 p-6 text-white font-sans relative">
       {/* Dashboard Stats */}
@@ -161,11 +249,24 @@ function Dashboard() {
         )}
       </div>
 
+      {/*Update Account*/}
+        <UpdateAccount setActiveForm={setActiveForm} />
+
+      {activeForm === 'fullname' && <FullnameAndEmailForm onClose={closeForm} />}
+      {activeForm === 'avatar' && <AvatarForm onClose={closeForm} />}
+      {activeForm === 'cover' && <CoverForm onClose={closeForm} />}
+        <div>
+          <br />
+      <h1 className="text-2xl font-bold text-center mt-4">Dashboard</h1>
+
+
+    </div>
+
       {/* Upload Button */}
       <div className="flex items-center gap-2 my-6 ml-2 cursor-pointer hover:text-fuchsia-300" onClick={() => setShowUploadForm(true)}>
         <span className="text-lg font-semibold ml-5 hover:underline hover:scale-105 transition-transform duration-150">📤 Upload Video</span>
       </div>
-
+    
       {/* Upload Modal */}
       {showUploadForm && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
@@ -238,6 +339,120 @@ function Dashboard() {
             ))}
           </div>
         )}
+      </div>
+      {/* Tweet form  */}
+      {
+        showTweetForm && (
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+            <div className="bg-white text-gray-900 p-6 rounded-xl w-full max-w-md relative shadow-lg">
+              <button
+                className="absolute top-2 right-3 text-2xl text-gray-400 hover:text-red-500 transition"
+                onClick={() => setShowTweetForm(false)}
+              >
+                ✕
+              </button>
+              <h3 className="text-2xl font-bold mb-5 text-center">🐦 Create Tweet</h3>
+              <form onSubmit={handleTweetSubmit} className="space-y-4">
+                <textarea
+                  name="content"
+                  value={tweet.content}
+                  onChange={(e) => handleTweetChange(e)}
+                  placeholder="What's happening?"
+                  required
+                  maxLength={280}
+                  className="w-full p-2 border rounded-md"
+                />
+                <button
+                  type="submit"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md transition" onClick={() => handleTweet}>
+                  Tweet
+                </button>
+              </form>
+            </div>
+          </div>
+        )
+      }
+      {/* My Tweets */}
+      <div className="min-h-screen bg-gradient-to-br from-blue-950 via-blue-900 to-blue-800 p-6 text-white font-sans relative">
+
+        {/* My Tweets */}
+        <div className='px-4 md:px-6 py-8'>
+          <div className="flex items-center gap-2 my-6 ml-2 cursor-pointer hover:text-fuchsia-300" onClick={() => setShowTweetForm(true)}>
+            <span className="text-lg font-semibold ml-5 hover:underline hover:scale-105 transition-transform duration-150">📤 Create Tweet</span>
+          </div>
+          <h2 className="text-3xl font-semibold mb-6">🐦 My Tweets</h2>
+          {tweetData.length === 0 ? (
+            <p className="text-gray-400">No tweets posted yet.</p>
+          ) : (
+            <div className="space-y-4">
+              {tweetData.map((tweet, idx) => (
+                <div key={idx} className="bg-white/10 p-4 rounded-lg shadow hover:shadow-md transition relative group">
+                  {/* Header */}
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <img src={tweet.owner?.avatar?.url || tweet.owner?.avatar} alt="avatar" className="w-8 h-8 rounded-full" />
+                      <span className="font-bold text-sm">@{tweet.owner?.username}</span>
+                    </div>
+
+                    {/* Edit/Delete Buttons */}
+                    {editingTweet && (
+                      <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+                        <div className="bg-white text-gray-900 p-6 rounded-xl w-full max-w-md relative shadow-lg">
+                          <button
+                            className="absolute top-2 right-3 text-2xl text-gray-400 hover:text-red-500 transition"
+                            onClick={() => setEditingTweet(null)}
+                          >
+                            ✕
+                          </button>
+                          <h3 className="text-2xl font-bold mb-5 text-center">🐦 Edit Tweet</h3>
+                          <form onSubmit={(e) => handleEditTweet(e, editingTweet._id)} className="space-y-4">
+                            <textarea
+                              name="content"
+                              value={editContent}
+                              onChange={(e) => setEditContent(e.target.value)}
+                              placeholder="What's happening?"
+                              required
+                              maxLength={280}
+                              className="w-full p-2 border rounded-md"
+                            />
+                            <button
+                              type="submit"
+                              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md transition"
+                            >
+                              Save Changes
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <button
+                        onClick={() => {
+                          setEditingTweet(tweet);
+                          setEditContent(tweet.content);
+                        }}
+                        className="bg-yellow-500 hover:bg-yellow-600 text-white text-xs px-3 py-1 rounded-full"
+                      >
+                        ✏️ Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteTweet(tweet._id)}
+                        className="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-transform transform hover:scale-105"
+                      >
+                        🗑️ Delete
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <p className="text-white text-sm">{tweet.content}</p>
+                  <p className="text-gray-400 text-xs mt-1">{new Date(tweet.createdAt).toLocaleString()}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

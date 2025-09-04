@@ -15,6 +15,9 @@ function LoginAndRegister() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(!(email.endsWith('@gmail.com')||email.endsWith('@outlook.com'))){
+      alert("Email is not valid")
+    }
 
     try {
       const formData = new FormData();
@@ -151,7 +154,7 @@ function LoginAndRegister() {
 
           <button
             type="submit"
-            className="w-full py-2 mt-4 bg-fuchsia-100 text-blue-950 font-bold rounded-lg shadow hover:bg-fuchsia-200 transition duration-300"
+            className="w-full py-2 mt-4 bg-fuchsia-100 text-blue-950 font-bold rounded-lg shadow hover:bg-fuchsia-200 transition duration-300 cursor-pointer"
           >
             {isLogin ? 'Login' : 'Register'}
           </button>
