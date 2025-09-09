@@ -11,8 +11,7 @@ function User() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const username = Cookies.get('username');
-        const response = await axios.get(`http://localhost:8000/api/v1/users/channel/${username}`, { withCredentials: true });
+        const response = await axios.get(`http://localhost:8000/api/v1/users/channel`, { withCredentials: true });
         setData(response.data);
         console.log(response.data)
       } catch (error) {
