@@ -5,12 +5,16 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  server : {
-    proxy : {
-      '/api' : 'http://localhost:8000/api/v1'
+  server: {
+    proxy: {
+      "/api/v1": {
+        target: "https://backend-project-743d.vercel.app", // your backend URL
+        changeOrigin: true,
+        secure: true,
+      },
     }
   },
   plugins: [react()
-    ,tailwindcss()
+    , tailwindcss()
   ],
 })
