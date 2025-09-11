@@ -40,7 +40,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/v1/dashboard/stats', {
+        const response = await axios.get('https://devconnectbackend-9af9.onrender.com/api/v1/dashboard/stats', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
@@ -57,7 +57,7 @@ function Dashboard() {
   // Fetch Channel Videos
   const fetchVideos = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/api/v1/dashboard/videos', {
+      const response = await axios.get('https://devconnectbackend-9af9.onrender.com/api/v1/dashboard/videos', {
         withCredentials: true,
       });
       setVideoData(response.data?.data?.video || []);
@@ -70,7 +70,7 @@ function Dashboard() {
   const fetchTweets = async () => {
     let userId = null;
     try {
-      const res = await axios.get(`http://localhost:8000/api/v1/users/current-user`, {
+      const res = await axios.get(`https://devconnectbackend-9af9.onrender.com/api/v1/users/current-user`, {
         withCredentials: true,
       });
       const user = res.data;
@@ -82,7 +82,7 @@ function Dashboard() {
     }
 
     try {
-      const response = await axios.get(`http://localhost:8000/api/v1/tweets/user/${userId}`, {
+      const response = await axios.get(`https://devconnectbackend-9af9.onrender.com/api/v1/tweets/user/${userId}`, {
         withCredentials: true,
       });
 
@@ -124,7 +124,7 @@ function Dashboard() {
     formData.append('videoFile', form.videoFile);
 
     try {
-      await axios.post('http://localhost:8000/api/v1/videos/getVideo', formData, {
+      await axios.post('https://devconnectbackend-9af9.onrender.com/api/v1/videos/getVideo', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -144,7 +144,7 @@ function Dashboard() {
 
   const handleDelete = async (videoId) => {
     try {
-      await axios.delete(`http://localhost:8000/api/v1/videos/${videoId}`, {
+      await axios.delete(`https://devconnectbackend-9af9.onrender.com/api/v1/videos/${videoId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -167,7 +167,7 @@ function Dashboard() {
     }
 
     try {
-      await axios.patch(`http://localhost:8000/api/v1/videos/${updateForm._id}`, formData, {
+      await axios.patch(`https://devconnectbackend-9af9.onrender.com/api/v1/videos/${updateForm._id}`, formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'multipart/form-data',
@@ -188,7 +188,7 @@ function Dashboard() {
     e.preventDefault();
     try {
       await axios.post(
-        'http://localhost:8000/api/v1/tweets/',
+        'https://devconnectbackend-9af9.onrender.com/api/v1/tweets/',
         { content: tweet.content },
         {
           withCredentials: true,
@@ -219,7 +219,7 @@ function Dashboard() {
   }, [])
   const handleDeleteTweet = async (id) => {
     try {
-      await axios.delete(`http://localhost:8000/api/v1/tweets/${id}`,
+      await axios.delete(`https://devconnectbackend-9af9.onrender.com/api/v1/tweets/${id}`,
         {
           withCredentials: true
         }

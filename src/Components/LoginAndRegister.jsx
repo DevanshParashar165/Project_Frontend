@@ -32,8 +32,8 @@ function LoginAndRegister() {
       }
 
       const url = isLogin
-        ? 'http://localhost:8000/api/v1/users/login'
-        : 'http://localhost:8000/api/v1/users/register';
+        ? 'https://devconnectbackend-9af9.onrender.com/api/v1/users/login'
+        : 'https://devconnectbackend-9af9.onrender.com/api/v1/users/register';
 
       const response = await axios.post(url, formData, {
         headers: {

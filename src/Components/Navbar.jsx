@@ -10,7 +10,7 @@ function Navbar() {
   useEffect(() => {
     const checkLogin = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/api/v1/users/current-user', {
+        const res = await axios.get('https://devconnectbackend-9af9.onrender.com/api/v1/users/current-user', {
           withCredentials: true,
         });
         if (res.data && res.data.data) {
@@ -33,7 +33,7 @@ function Navbar() {
 
   const logOut = async () => {
     try {
-      await axios.post('http://localhost:8000/api/v1/users/logout', {}, { withCredentials: true });
+      await axios.post('https://devconnectbackend-9af9.onrender.com/api/v1/users/logout', {}, { withCredentials: true });
       setIsLoggedIn(false);
       navigate('/');
     } catch (error) {

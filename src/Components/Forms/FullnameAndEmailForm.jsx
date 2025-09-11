@@ -35,7 +35,7 @@ function FullnameAndEmailForm({ onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await axios.patch(
-      'http://localhost:8000/api/v1/users/update-account',
+      'https://devconnectbackend-9af9.onrender.com/api/v1/users/update-account',
       {
         fullname: formData.fullname,
         email: formData.email

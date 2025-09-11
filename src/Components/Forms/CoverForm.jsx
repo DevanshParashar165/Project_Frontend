@@ -17,7 +17,7 @@ function CoverImageForm({ onClose }) {
 
     try {
       const res = await axios.patch(
-        `http://localhost:8000/api/v1/users/cover-image`,
+        `https://devconnectbackend-9af9.onrender.com/api/v1/users/cover-image`,
         formData,
         {
           withCredentials: true,

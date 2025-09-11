@@ -6,7 +6,7 @@ function Tweet() {
 
   const fetchTweet = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/v1/tweets/", {
+      const response = await axios.get("https://devconnectbackend-9af9.onrender.com/api/v1/tweets/", {
         withCredentials: true
       })
       const tweets = response.data?.data || []

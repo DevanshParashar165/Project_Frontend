@@ -11,7 +11,7 @@ function User() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/v1/users/channel`, { withCredentials: true });
+        const response = await axios.get(`https://devconnectbackend-9af9.onrender.com/api/v1/users/channel`, { withCredentials: true });
         setData(response.data);
         console.log(response.data)
       } catch (error) {
@@ -25,7 +25,7 @@ function User() {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/api/v1/dashboard/videos', { withCredentials: true });
+        const res = await axios.get('https://devconnectbackend-9af9.onrender.com/api/v1/dashboard/videos', { withCredentials: true });
         setVideoData(res.data?.data?.video || []);
       } catch (error) {
         console.error('Video Fetch Error:', error);
@@ -38,11 +38,11 @@ function User() {
   useEffect(() => {
     const fetchTweets = async () => {
       try {
-        const res = await axios.get(`http://localhost:8000/api/v1/users/current-user`, { withCredentials: true });
+        const res = await axios.get(`https://devconnectbackend-9af9.onrender.com/api/v1/users/current-user`, { withCredentials: true });
         const userId = res.data?.data?._id;
         if (!userId) return console.warn("User ID not found.");
 
-        const tweetsRes = await axios.get(`http://localhost:8000/api/v1/tweets/user/${userId}`, { withCredentials: true });
+        const tweetsRes = await axios.get(`https://devconnectbackend-9af9.onrender.com/api/v1/tweets/user/${userId}`, { withCredentials: true });
         setTweetData(tweetsRes.data?.data || []);
       } catch (error) {
         console.error('Tweet Fetch Error:', error);

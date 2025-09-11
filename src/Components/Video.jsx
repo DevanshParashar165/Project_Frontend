@@ -6,7 +6,7 @@ function Video() {
 
   const getVideo = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/api/v1/videos/getVideo`, {
+      const response = await axios.get(`https://devconnectbackend-9af9.onrender.com/api/v1/videos/getVideo`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -34,7 +34,7 @@ function Video() {
 
       // Increase views only when entering fullscreen
       try {
-        await axios.patch(`http://localhost:8000/api/v1/videos/views/${id}`, {}, {
+        await axios.patch(`https://devconnectbackend-9af9.onrender.com/api/v1/videos/views/${id}`, {}, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
