@@ -13,10 +13,8 @@ function Dashboard() {
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [showTweetForm, setShowTweetForm] = useState(false);
   const [tweet, setTweet] = useState({ content: '' });
-  const [newTweet, setNewTweet] = useState({ content: '' });
   const [editContent, setEditContent] = useState('');
   const [editingTweet, setEditingTweet] = useState(null);
-  const [selectionForm,setSelectionForm] = useState(null);
   const [activeForm, setActiveForm] = useState(null);
 
   const closeForm = () => setActiveForm(null);
@@ -92,8 +90,6 @@ function Dashboard() {
       console.log("Error fetching tweets:", error);
     }
   };
-
-
 
   useEffect(() => {
     fetchVideos();
@@ -197,7 +193,7 @@ function Dashboard() {
       alert("Tweet posted successfully!");
       setShowTweetForm(false);
       setTweet({ content: '' });
-      fetchTweets(); // refresh
+      fetchTweets();
     } catch (error) {
       console.log("Error : ", error);
       alert("Tweet failed!");
@@ -211,12 +207,6 @@ function Dashboard() {
     }));
   }
 
-  
-
-
-  useEffect(() => {
-    fetchTweets();
-  }, [])
   const handleDeleteTweet = async (id) => {
     try {
       await axios.delete(`https://devconnectbackend-9af9.onrender.com/api/v1/tweets/${id}`,
@@ -231,223 +221,415 @@ function Dashboard() {
     }
   }
 
+  const handleEditTweet = async (e, tweetId) => {
+    e.preventDefault();
+    try {
+      await axios.patch(`https://devconnectbackend-9af9.onrender.com/api/v1/tweets/${tweetId}`, 
+        { content: editContent },
+        { withCredentials: true }
+      );
+      setEditingTweet(null);
+      setEditContent('');
+      fetchTweets();
+      alert("Tweet updated successfully!");
+    } catch (error) {
+      console.log("Error updating tweet:", error);
+      alert("Failed to update tweet.");
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-950 via-blue-900 to-blue-800 p-6 text-white font-sans relative">
-      {/* Dashboard Stats */}
-      <div className="max-w-xl mx-auto bg-white/10 backdrop-blur-sm shadow-2xl rounded-2xl p-8 space-y-4 border border-white/10">
-        <h2 className="text-3xl font-bold text-center text-fuchsia-100 mb-6">📊 Dashboard Stats</h2>
-        {data ? (
-          <>
-            <div className="flex justify-between py-2 border-b border-blue-700"><span>🎥 Videos</span><span>{data.videos}</span></div>
-            <div className="flex justify-between py-2 border-b border-blue-700"><span>👥 Subscribers</span><span>{data.subscribers}</span></div>
-            <div className="flex justify-between py-2 border-b border-blue-700"><span>❤️ Likes</span><span>{data.likes}</span></div>
-            <div className="flex justify-between py-2"><span>👁️ Total Views</span><span>{data.totalViews}</span></div>
-          </>
-        ) : (
-          <p className="text-center text-fuchsia-200">Loading stats...</p>
-        )}
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
       </div>
 
-      {/*Update Account*/}
-        <UpdateAccount setActiveForm={setActiveForm} />
-
-      {activeForm === 'fullname' && <FullnameAndEmailForm onClose={closeForm} />}
-      {activeForm === 'avatar' && <AvatarForm onClose={closeForm} />}
-      {activeForm === 'cover' && <CoverForm onClose={closeForm} />}
-        <div>
-          <br />
-      <h1 className="text-2xl font-bold text-center mt-4">Dashboard</h1>
-
-
-    </div>
-
-      {/* Upload Button */}
-      <div className="flex items-center gap-2 my-6 ml-2 cursor-pointer hover:text-fuchsia-300" onClick={() => setShowUploadForm(true)}>
-        <span className="text-lg font-semibold ml-5 hover:underline hover:scale-105 transition-transform duration-150">📤 Upload Video</span>
-      </div>
-    
-      {/* Upload Modal */}
-      {showUploadForm && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-white text-gray-900 p-6 rounded-xl w-full max-w-md relative shadow-lg">
-            <button className="absolute top-2 right-3 text-2xl text-gray-400 hover:text-red-500 transition" onClick={() => setShowUploadForm(false)}>✕</button>
-            <h3 className="text-2xl font-bold mb-5 text-center">📤 Upload New Video</h3>
-            <form onSubmit={handleUpload} className="space-y-4">
-              <input type="text" name="title" value={form.title} onChange={handleChange} placeholder="Video Title" required className="w-full p-2 border rounded-md" />
-              <textarea name="description" value={form.description} onChange={handleChange} placeholder="Video Description" required className="w-full p-2 border rounded-md" />
-              <label className='p-3'>Thumbnail</label>
-              <input type="file" name="thumbnail" accept="image/*" onChange={handleChange} required className="w-full p-2" />
-              <label className='p-3'>Video</label>
-              <input type="file" name="videoFile" accept="video/*" onChange={handleChange} required className="w-full p-2" />
-              <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md transition">Upload</button>
-            </form>
-          </div>
+      <div className="relative z-10 p-6 max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent mb-2">
+            Dashboard
+          </h1>
+          <p className="text-gray-400">Manage your content and track your progress</p>
         </div>
-      )}
 
-      {/* Update Modal */}
-      {showUpdateForm && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-white text-gray-900 p-6 rounded-xl w-full max-w-md relative shadow-lg">
-            <button className="absolute top-2 right-3 text-2xl text-gray-400 hover:text-red-500 transition" onClick={() => setShowUpdateForm(false)}>✕</button>
-            <h3 className="text-2xl font-bold mb-5 text-center">✏️ Update Video</h3>
-            <form onSubmit={handleUpdate} className="space-y-4">
-              <input type="text" name="title" value={updateForm.title} onChange={(e) => setUpdateForm((prev) => ({ ...prev, title: e.target.value }))} required className="w-full p-2 border rounded-md" />
-              <textarea name="description" value={updateForm.description} onChange={(e) => setUpdateForm((prev) => ({ ...prev, description: e.target.value }))} required className="w-full p-2 border rounded-md" />
-              {updateForm.existingThumbnail && <img src={updateForm.existingThumbnail} alt="Current Thumbnail" className="w-32 h-20 object-cover rounded-md border" />}
-              <label className="block mt-2">Upload New Thumbnail (Optional)</label>
-              <input type="file" name="thumbnail" accept="image/*" onChange={(e) => setUpdateForm((prev) => ({ ...prev, thumbnail: e.target.files[0] }))} className="w-full p-2" />
-              <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md transition">✅ Update</button>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* My Videos */}
-      <div className="px-4 md:px-6 py-8">
-        <h2 className="text-3xl font-semibold mb-6">📹 My Videos</h2>
-        {videoData.length === 0 ? (
-          <p className="text-gray-400">No videos uploaded yet.</p>
-        ) : (
-          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {videoData.map((video) => (
-              <div key={video._id} className="bg-white/10 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-                <video controls className="w-full h-40 object-cover cursor-pointer" src={video.videoFile} poster={video.thumbnail} onClick={(e) => handleFullScreen(e.target)} />
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold truncate">{video.title}</h3>
-                  <p className="text-sm text-gray-300">{video.views} views</p>
-                  <p className="text-xs text-gray-400 mb-2">{new Date(video.createdAt).toLocaleDateString()}</p>
-                  <button onClick={() => handleDelete(video._id)} className="w-full bg-red-600 hover:bg-red-700 text-white py-1 rounded-lg transition font-medium">🗑️ Delete</button>
-                  <button
-                    className="w-full mt-2 bg-green-600 hover:bg-green-700 text-white py-1 rounded-lg transition font-medium"
-                    onClick={() => {
-                      setUpdateForm({
-                        _id: video._id,
-                        title: video.title,
-                        description: video.description,
-                        thumbnail: null,
-                        existingThumbnail: video.thumbnail,
-                      });
-                      setShowUpdateForm(true);
-                    }}
-                  >
-                    ✏️ Update
-                  </button>
-                </div>
+        {/* Dashboard Stats */}
+        <div className="mb-12">
+          <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-2xl">
+            <h2 className="text-2xl font-bold text-center mb-8 flex items-center justify-center gap-2">
+              📊 <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">Analytics Overview</span>
+            </h2>
+            {data ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {[
+                  { label: 'Videos', value: data.videos, icon: '🎥', color: 'from-red-500 to-pink-500' },
+                  { label: 'Subscribers', value: data.subscribers, icon: '👥', color: 'from-blue-500 to-cyan-500' },
+                  { label: 'Likes', value: data.likes, icon: '❤️', color: 'from-pink-500 to-rose-500' },
+                  { label: 'Total Views', value: data.totalViews, icon: '👁️', color: 'from-purple-500 to-indigo-500' },
+                ].map((stat, index) => (
+                  <div key={index} className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-all">
+                    <div className="text-center">
+                      <div className="text-3xl mb-2">{stat.icon}</div>
+                      <div className={`text-2xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>
+                        {stat.value}
+                      </div>
+                      <div className="text-gray-400 text-sm">{stat.label}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            ) : (
+              <div className="text-center py-8">
+                <div className="animate-spin w-8 h-8 border-2 border-purple-500/30 border-t-purple-500 rounded-full mx-auto mb-4"></div>
+                <p className="text-gray-400">Loading analytics...</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Update Account Section */}
+        <div className="mb-12">
+          <UpdateAccount setActiveForm={setActiveForm} />
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-wrap gap-4 mb-12 justify-center">
+          <button
+            onClick={() => setShowUploadForm(true)}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl font-medium hover:shadow-lg hover:scale-105 transition-all"
+          >
+            📤 Upload Video
+          </button>
+          <button
+            onClick={() => setShowTweetForm(true)}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl font-medium hover:shadow-lg hover:scale-105 transition-all"
+          >
+            🐦 Create Tweet
+          </button>
+        </div>
+
+        {/* Forms */}
+        {activeForm === 'fullname' && <FullnameAndEmailForm onClose={closeForm} />}
+        {activeForm === 'avatar' && <AvatarForm onClose={closeForm} />}
+        {activeForm === 'cover' && <CoverForm onClose={closeForm} />}
+
+        {/* Upload Modal */}
+        {showUploadForm && (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-slate-800/90 backdrop-blur-xl text-white p-8 rounded-3xl w-full max-w-md border border-white/10 shadow-2xl">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-bold">📤 Upload Video</h3>
+                <button 
+                  onClick={() => setShowUploadForm(false)}
+                  className="p-2 hover:bg-white/10 rounded-xl transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+              <form onSubmit={handleUpload} className="space-y-4">
+                <input 
+                  type="text" 
+                  name="title" 
+                  value={form.title} 
+                  onChange={handleChange} 
+                  placeholder="Video Title" 
+                  required 
+                  className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                />
+                <textarea 
+                  name="description" 
+                  value={form.description} 
+                  onChange={handleChange} 
+                  placeholder="Video Description" 
+                  required 
+                  rows="3"
+                  className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none" 
+                />
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-300">Thumbnail</label>
+                  <input 
+                    type="file" 
+                    name="thumbnail" 
+                    accept="image/*" 
+                    onChange={handleChange} 
+                    required 
+                    className="w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-purple-500/20 file:text-purple-300 hover:file:bg-purple-500/30" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-300">Video File</label>
+                  <input 
+                    type="file" 
+                    name="videoFile" 
+                    accept="video/*" 
+                    onChange={handleChange} 
+                    required 
+                    className="w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-500/20 file:text-blue-300 hover:file:bg-blue-500/30" 
+                  />
+                </div>
+                <button 
+                  type="submit" 
+                  className="w-full py-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl font-medium hover:shadow-lg hover:scale-105 transition-all"
+                >
+                  Upload Video
+                </button>
+              </form>
+            </div>
           </div>
         )}
-      </div>
-      {/* Tweet form  */}
-      {
-        showTweetForm && (
-          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-            <div className="bg-white text-gray-900 p-6 rounded-xl w-full max-w-md relative shadow-lg">
-              <button
-                className="absolute top-2 right-3 text-2xl text-gray-400 hover:text-red-500 transition"
-                onClick={() => setShowTweetForm(false)}
-              >
-                ✕
-              </button>
-              <h3 className="text-2xl font-bold mb-5 text-center">🐦 Create Tweet</h3>
+
+        {/* Tweet Modal */}
+        {showTweetForm && (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-slate-800/90 backdrop-blur-xl text-white p-8 rounded-3xl w-full max-w-md border border-white/10 shadow-2xl">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-bold">🐦 Create Tweet</h3>
+                <button 
+                  onClick={() => setShowTweetForm(false)}
+                  className="p-2 hover:bg-white/10 rounded-xl transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
               <form onSubmit={handleTweetSubmit} className="space-y-4">
                 <textarea
                   name="content"
                   value={tweet.content}
-                  onChange={(e) => handleTweetChange(e)}
+                  onChange={handleTweetChange}
                   placeholder="What's happening?"
                   required
                   maxLength={280}
-                  className="w-full p-2 border rounded-md"
+                  rows="4"
+                  className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                 />
+                <div className="flex justify-between items-center text-sm text-gray-400">
+                  <span>{tweet.content.length}/280</span>
+                </div>
                 <button
                   type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md transition" onClick={() => handleTweet}>
+                  className="w-full py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl font-medium hover:shadow-lg hover:scale-105 transition-all"
+                >
                   Tweet
                 </button>
               </form>
             </div>
           </div>
-        )
-      }
-      {/* My Tweets */}
-      <div className="min-h-screen bg-gradient-to-br from-blue-950 via-blue-900 to-blue-800 p-6 text-white font-sans relative">
+        )}
+
+        {/* Update Modal */}
+        {showUpdateForm && (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-slate-800/90 backdrop-blur-xl text-white p-8 rounded-3xl w-full max-w-md border border-white/10 shadow-2xl">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-bold">✏️ Update Video</h3>
+                <button 
+                  onClick={() => setShowUpdateForm(false)}
+                  className="p-2 hover:bg-white/10 rounded-xl transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+              <form onSubmit={handleUpdate} className="space-y-4">
+                <input 
+                  type="text" 
+                  name="title" 
+                  value={updateForm.title} 
+                  onChange={(e) => setUpdateForm((prev) => ({ ...prev, title: e.target.value }))} 
+                  required 
+                  className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                />
+                <textarea 
+                  name="description" 
+                  value={updateForm.description} 
+                  onChange={(e) => setUpdateForm((prev) => ({ ...prev, description: e.target.value }))} 
+                  required 
+                  rows="3"
+                  className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none" 
+                />
+                {updateForm.existingThumbnail && (
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-300">Current Thumbnail</label>
+                    <img src={updateForm.existingThumbnail} alt="Current Thumbnail" className="w-full h-32 object-cover rounded-xl border border-white/10" />
+                  </div>
+                )}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-300">New Thumbnail (Optional)</label>
+                  <input 
+                    type="file" 
+                    name="thumbnail" 
+                    accept="image/*" 
+                    onChange={(e) => setUpdateForm((prev) => ({ ...prev, thumbnail: e.target.files[0] }))} 
+                    className="w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-purple-500/20 file:text-purple-300 hover:file:bg-purple-500/30" 
+                  />
+                </div>
+                <button 
+                  type="submit" 
+                  className="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl font-medium hover:shadow-lg hover:scale-105 transition-all"
+                >
+                  ✅ Update Video
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Edit Tweet Modal */}
+        {editingTweet && (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-slate-800/90 backdrop-blur-xl text-white p-8 rounded-3xl w-full max-w-md border border-white/10 shadow-2xl">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-bold">✏️ Edit Tweet</h3>
+                <button 
+                  onClick={() => setEditingTweet(null)}
+                  className="p-2 hover:bg-white/10 rounded-xl transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+              <form onSubmit={(e) => handleEditTweet(e, editingTweet._id)} className="space-y-4">
+                <textarea
+                  name="content"
+                  value={editContent}
+                  onChange={(e) => setEditContent(e.target.value)}
+                  placeholder="What's happening?"
+                  required
+                  maxLength={280}
+                  rows="4"
+                  className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                />
+                <div className="flex justify-between items-center text-sm text-gray-400">
+                  <span>{editContent.length}/280</span>
+                </div>
+                <button
+                  type="submit"
+                  className="w-full py-3 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl font-medium hover:shadow-lg hover:scale-105 transition-all"
+                >
+                  Save Changes
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* My Videos */}
+        <div className="mb-12">
+          <h2 className="text-3xl font-bold mb-8 flex items-center gap-2">
+            🎥 <span className="bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent">My Videos</span>
+          </h2>
+          {videoData.length === 0 ? (
+            <div className="text-center py-12 bg-white/5 rounded-3xl border border-white/10">
+              <div className="text-6xl mb-4">🎬</div>
+              <p className="text-gray-400 text-lg">No videos uploaded yet</p>
+              <p className="text-gray-500 text-sm">Upload your first video to get started!</p>
+            </div>
+          ) : (
+            <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {videoData.map((video) => (
+                <div key={video._id} className="bg-white/5 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/10 hover:bg-white/10 transition-all group">
+                  <div className="relative">
+                    <video 
+                      controls 
+                      className="w-full h-48 object-cover cursor-pointer" 
+                      src={video.videoFile} 
+                      poster={video.thumbnail} 
+                      onClick={(e) => handleFullScreen(e.target)} 
+                    />
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
+                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold truncate mb-2">{video.title}</h3>
+                    <div className="flex items-center gap-4 text-sm text-gray-400 mb-4">
+                      <span className="flex items-center gap-1">
+                        👁️ {video.views}
+                      </span>
+                      <span>{new Date(video.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => handleDelete(video._id)} 
+                        className="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-300 py-2 rounded-xl transition-all font-medium"
+                      >
+                        🗑️ Delete
+                      </button>
+                      <button
+                        className="flex-1 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 py-2 rounded-xl transition-all font-medium"
+                        onClick={() => {
+                          setUpdateForm({
+                            _id: video._id,
+                            title: video.title,
+                            description: video.description,
+                            thumbnail: null,
+                            existingThumbnail: video.thumbnail,
+                          });
+                          setShowUpdateForm(true);
+                        }}
+                      >
+                        ✏️ Edit
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* My Tweets */}
-        <div className='px-4 md:px-6 py-8'>
-          <div className="flex items-center gap-2 my-6 ml-2 cursor-pointer hover:text-fuchsia-300" onClick={() => setShowTweetForm(true)}>
-            <span className="text-lg font-semibold ml-5 hover:underline hover:scale-105 transition-transform duration-150">📤 Create Tweet</span>
-          </div>
-          <h2 className="text-3xl font-semibold mb-6">🐦 My Tweets</h2>
+        <div>
+          <h2 className="text-3xl font-bold mb-8 flex items-center gap-2">
+            🐦 <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">My Tweets</span>
+          </h2>
           {tweetData.length === 0 ? (
-            <p className="text-gray-400">No tweets posted yet.</p>
+            <div className="text-center py-12 bg-white/5 rounded-3xl border border-white/10">
+              <div className="text-6xl mb-4">🐦</div>
+              <p className="text-gray-400 text-lg">No tweets posted yet</p>
+              <p className="text-gray-500 text-sm">Share your thoughts with the world!</p>
+            </div>
           ) : (
             <div className="space-y-4">
               {tweetData.map((tweet, idx) => (
-                <div key={idx} className="bg-white/10 p-4 rounded-lg shadow hover:shadow-md transition relative group">
-                  {/* Header */}
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <img src={tweet.owner?.avatar?.url || tweet.owner?.avatar} alt="avatar" className="w-8 h-8 rounded-full" />
-                      <span className="font-bold text-sm">@{tweet.owner?.username}</span>
-                    </div>
-
-                    {/* Edit/Delete Buttons */}
-                    {editingTweet && (
-                      <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-                        <div className="bg-white text-gray-900 p-6 rounded-xl w-full max-w-md relative shadow-lg">
-                          <button
-                            className="absolute top-2 right-3 text-2xl text-gray-400 hover:text-red-500 transition"
-                            onClick={() => setEditingTweet(null)}
-                          >
-                            ✕
-                          </button>
-                          <h3 className="text-2xl font-bold mb-5 text-center">🐦 Edit Tweet</h3>
-                          <form onSubmit={(e) => handleEditTweet(e, editingTweet._id)} className="space-y-4">
-                            <textarea
-                              name="content"
-                              value={editContent}
-                              onChange={(e) => setEditContent(e.target.value)}
-                              placeholder="What's happening?"
-                              required
-                              maxLength={280}
-                              className="w-full p-2 border rounded-md"
-                            />
-                            <button
-                              type="submit"
-                              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md transition"
-                            >
-                              Save Changes
-                            </button>
-                          </form>
-                        </div>
+                <div key={idx} className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition-all group">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <img 
+                        src={tweet.owner?.avatar?.url || tweet.owner?.avatar} 
+                        alt="avatar" 
+                        className="w-12 h-12 rounded-xl object-cover border-2 border-white/10" 
+                      />
+                      <div>
+                        <span className="font-semibold text-white">@{tweet.owner?.username}</span>
+                        <p className="text-gray-400 text-sm">{new Date(tweet.createdAt).toLocaleString()}</p>
                       </div>
-                    )}
-
-                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    </div>
+                    
+                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={() => {
                           setEditingTweet(tweet);
                           setEditContent(tweet.content);
                         }}
-                        className="bg-yellow-500 hover:bg-yellow-600 text-white text-xs px-3 py-1 rounded-full"
+                        className="p-2 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-300 rounded-xl transition-all"
                       >
-                        ✏️ Edit
+                        ✏️
                       </button>
                       <button
                         onClick={() => handleDeleteTweet(tweet._id)}
-                        className="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-transform transform hover:scale-105"
+                        className="p-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-xl transition-all"
                       >
-                        🗑️ Delete
+                        🗑️
                       </button>
                     </div>
                   </div>
-
-                  {/* Content */}
-                  <p className="text-white text-sm">{tweet.content}</p>
-                  <p className="text-gray-400 text-xs mt-1">{new Date(tweet.createdAt).toLocaleString()}</p>
+                  
+                  <p className="text-white leading-relaxed">{tweet.content}</p>
                 </div>
               ))}
             </div>
