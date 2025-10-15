@@ -224,7 +224,7 @@ function Dashboard() {
   const handleEditTweet = async (e, tweetId) => {
     e.preventDefault();
     try {
-      await axios.patch(`https://devconnectbackend-9af9.onrender.com/api/v1/tweets/${tweetId}`, 
+      await axios.patch(`https://devconnectbackend-9af9.onrender.com/api/v1/tweets/${tweetId}`,
         { content: editContent },
         { withCredentials: true }
       );
@@ -321,7 +321,7 @@ function Dashboard() {
             <div className="bg-slate-800/90 backdrop-blur-xl text-white p-8 rounded-3xl w-full max-w-md border border-white/10 shadow-2xl">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-2xl font-bold">📤 Upload Video</h3>
-                <button 
+                <button
                   onClick={() => setShowUploadForm(false)}
                   className="p-2 hover:bg-white/10 rounded-xl transition-colors"
                 >
@@ -329,48 +329,48 @@ function Dashboard() {
                 </button>
               </div>
               <form onSubmit={handleUpload} className="space-y-4">
-                <input 
-                  type="text" 
-                  name="title" 
-                  value={form.title} 
-                  onChange={handleChange} 
-                  placeholder="Video Title" 
-                  required 
-                  className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                <input
+                  type="text"
+                  name="title"
+                  value={form.title}
+                  onChange={handleChange}
+                  placeholder="Video Title"
+                  required
+                  className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
-                <textarea 
-                  name="description" 
-                  value={form.description} 
-                  onChange={handleChange} 
-                  placeholder="Video Description" 
-                  required 
+                <textarea
+                  name="description"
+                  value={form.description}
+                  onChange={handleChange}
+                  placeholder="Video Description"
+                  required
                   rows="3"
-                  className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none" 
+                  className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
                 />
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-300">Thumbnail</label>
-                  <input 
-                    type="file" 
-                    name="thumbnail" 
-                    accept="image/*" 
-                    onChange={handleChange} 
-                    required 
-                    className="w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-purple-500/20 file:text-purple-300 hover:file:bg-purple-500/30" 
+                  <input
+                    type="file"
+                    name="thumbnail"
+                    accept="image/*"
+                    onChange={handleChange}
+                    required
+                    className="w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-purple-500/20 file:text-purple-300 hover:file:bg-purple-500/30"
                   />
                 </div>
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-300">Video File</label>
-                  <input 
-                    type="file" 
-                    name="videoFile" 
-                    accept="video/*" 
-                    onChange={handleChange} 
-                    required 
-                    className="w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-500/20 file:text-blue-300 hover:file:bg-blue-500/30" 
+                  <input
+                    type="file"
+                    name="videoFile"
+                    accept="video/*"
+                    onChange={handleChange}
+                    required
+                    className="w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-500/20 file:text-blue-300 hover:file:bg-blue-500/30"
                   />
                 </div>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="w-full py-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl font-medium hover:shadow-lg hover:scale-105 transition-all"
                 >
                   Upload Video
@@ -386,7 +386,7 @@ function Dashboard() {
             <div className="bg-slate-800/90 backdrop-blur-xl text-white p-8 rounded-3xl w-full max-w-md border border-white/10 shadow-2xl">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-2xl font-bold">🐦 Create Tweet</h3>
-                <button 
+                <button
                   onClick={() => setShowTweetForm(false)}
                   className="p-2 hover:bg-white/10 rounded-xl transition-colors"
                 >
@@ -424,7 +424,7 @@ function Dashboard() {
             <div className="bg-slate-800/90 backdrop-blur-xl text-white p-8 rounded-3xl w-full max-w-md border border-white/10 shadow-2xl">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-2xl font-bold">✏️ Update Video</h3>
-                <button 
+                <button
                   onClick={() => setShowUpdateForm(false)}
                   className="p-2 hover:bg-white/10 rounded-xl transition-colors"
                 >
@@ -432,21 +432,21 @@ function Dashboard() {
                 </button>
               </div>
               <form onSubmit={handleUpdate} className="space-y-4">
-                <input 
-                  type="text" 
-                  name="title" 
-                  value={updateForm.title} 
-                  onChange={(e) => setUpdateForm((prev) => ({ ...prev, title: e.target.value }))} 
-                  required 
-                  className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                <input
+                  type="text"
+                  name="title"
+                  value={updateForm.title}
+                  onChange={(e) => setUpdateForm((prev) => ({ ...prev, title: e.target.value }))}
+                  required
+                  className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
-                <textarea 
-                  name="description" 
-                  value={updateForm.description} 
-                  onChange={(e) => setUpdateForm((prev) => ({ ...prev, description: e.target.value }))} 
-                  required 
+                <textarea
+                  name="description"
+                  value={updateForm.description}
+                  onChange={(e) => setUpdateForm((prev) => ({ ...prev, description: e.target.value }))}
+                  required
                   rows="3"
-                  className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none" 
+                  className="w-full p-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
                 />
                 {updateForm.existingThumbnail && (
                   <div className="space-y-2">
@@ -456,16 +456,16 @@ function Dashboard() {
                 )}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-300">New Thumbnail (Optional)</label>
-                  <input 
-                    type="file" 
-                    name="thumbnail" 
-                    accept="image/*" 
-                    onChange={(e) => setUpdateForm((prev) => ({ ...prev, thumbnail: e.target.files[0] }))} 
-                    className="w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-purple-500/20 file:text-purple-300 hover:file:bg-purple-500/30" 
+                  <input
+                    type="file"
+                    name="thumbnail"
+                    accept="image/*"
+                    onChange={(e) => setUpdateForm((prev) => ({ ...prev, thumbnail: e.target.files[0] }))}
+                    className="w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-purple-500/20 file:text-purple-300 hover:file:bg-purple-500/30"
                   />
                 </div>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl font-medium hover:shadow-lg hover:scale-105 transition-all"
                 >
                   ✅ Update Video
@@ -481,7 +481,7 @@ function Dashboard() {
             <div className="bg-slate-800/90 backdrop-blur-xl text-white p-8 rounded-3xl w-full max-w-md border border-white/10 shadow-2xl">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-2xl font-bold">✏️ Edit Tweet</h3>
-                <button 
+                <button
                   onClick={() => setEditingTweet(null)}
                   className="p-2 hover:bg-white/10 rounded-xl transition-colors"
                 >
@@ -518,6 +518,7 @@ function Dashboard() {
           <h2 className="text-3xl font-bold mb-8 flex items-center gap-2">
             🎥 <span className="bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent">My Videos</span>
           </h2>
+
           {videoData.length === 0 ? (
             <div className="text-center py-12 bg-white/5 rounded-3xl border border-white/10">
               <div className="text-6xl mb-4">🎬</div>
@@ -527,34 +528,30 @@ function Dashboard() {
           ) : (
             <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {videoData.map((video) => (
-                <div key={video._id} className="bg-white/5 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/10 hover:bg-white/10 transition-all group">
+                <div
+                  key={video._id}
+                  className="bg-white/5 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/10 hover:bg-white/10 transition-all"
+                >
                   <div className="relative">
-                    <video 
-                      controls 
-                      className="w-full h-48 object-cover cursor-pointer" 
-                      src={video.videoFile} 
-                      poster={video.thumbnail} 
-                      onClick={(e) => handleFullScreen(e.target)} 
+                    <video
+                      controls
+                      className="w-full h-48 object-cover cursor-pointer"
+                      src={video.videoFile}
+                      poster={video.thumbnail}
+                      onClick={(e) => handleFullScreen(e.target)}
                     />
-                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
-                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M8 5v14l11-7z"/>
-                        </svg>
-                      </div>
-                    </div>
                   </div>
+
                   <div className="p-4">
                     <h3 className="text-lg font-semibold truncate mb-2">{video.title}</h3>
                     <div className="flex items-center gap-4 text-sm text-gray-400 mb-4">
-                      <span className="flex items-center gap-1">
-                        👁️ {video.views}
-                      </span>
+                      <span className="flex items-center gap-1">👁️ {video.views}</span>
                       <span>{new Date(video.createdAt).toLocaleDateString()}</span>
                     </div>
+
                     <div className="flex gap-2">
-                      <button 
-                        onClick={() => handleDelete(video._id)} 
+                      <button
+                        onClick={() => handleDelete(video._id)}
                         className="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-300 py-2 rounded-xl transition-all font-medium"
                       >
                         🗑️ Delete
@@ -581,7 +578,6 @@ function Dashboard() {
             </div>
           )}
         </div>
-
         {/* My Tweets */}
         <div>
           <h2 className="text-3xl font-bold mb-8 flex items-center gap-2">
@@ -599,17 +595,17 @@ function Dashboard() {
                 <div key={idx} className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition-all group">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <img 
-                        src={tweet.owner?.avatar?.url || tweet.owner?.avatar} 
-                        alt="avatar" 
-                        className="w-12 h-12 rounded-xl object-cover border-2 border-white/10" 
+                      <img
+                        src={tweet.owner?.avatar?.url || tweet.owner?.avatar}
+                        alt="avatar"
+                        className="w-12 h-12 rounded-xl object-cover border-2 border-white/10"
                       />
                       <div>
                         <span className="font-semibold text-white">@{tweet.owner?.username}</span>
                         <p className="text-gray-400 text-sm">{new Date(tweet.createdAt).toLocaleString()}</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={() => {
@@ -628,7 +624,7 @@ function Dashboard() {
                       </button>
                     </div>
                   </div>
-                  
+
                   <p className="text-white leading-relaxed">{tweet.content}</p>
                 </div>
               ))}

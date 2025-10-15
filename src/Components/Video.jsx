@@ -29,6 +29,7 @@ function Video() {
   }, []);
 
   const handleFullScreenAndViews = async (videoElement, id) => {
+    videoElement.play();
     if (!document.fullscreenElement) {
       if (videoElement.requestFullscreen) {
         await videoElement.requestFullscreen();
@@ -119,7 +120,7 @@ function Video() {
                 {searchTerm ? `Found ${filteredVideos.length} video${filteredVideos.length !== 1 ? 's' : ''}` : `${filteredVideos.length} video${filteredVideos.length !== 1 ? 's' : ''} available`}
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredVideos.map((video) => (
                 <div
@@ -127,50 +128,51 @@ function Video() {
                   className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:bg-white/10 transition-all duration-300 group"
                 >
                   <div className="relative overflow-hidden">
-                    <video
-                      controls
-                      className="w-full h-48 object-cover cursor-pointer transition-transform duration-300 group-hover:scale-105"
-                      src={video.videoFile}
-                      poster={video.thumbnail}
-                      title={video.title}
-                      onClick={(e) => handleFullScreenAndViews(e.target, video._id)}
-                    >
-                      Your browser does not support the video tag.
-                    </video>
-                    
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="absolute bottom-4 left-4 right-4">
-                        <div className="flex items-center gap-2 text-white text-sm">
-                          <span className="bg-black/50 backdrop-blur-sm px-2 py-1 rounded-lg">
-                            👁️ {video.views || 0}
-                          </span>
-                          <span className="bg-black/50 backdrop-blur-sm px-2 py-1 rounded-lg">
-                            {new Date(video.createdAt).toLocaleDateString()}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+  <video
+    controls
+    className="w-full h-48 object-cover cursor-pointer transition-transform duration-300 group-hover:scale-105 relative z-10"
+    src={video.videoFile}
+    poster={video.thumbnail}
+    title={video.title}
+    onClick={(e) => handleFullScreenAndViews(e.target, video._id)}
+  >
+    Your browser does not support the video tag.
+  </video>
 
-                    {/* Play button overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="bg-white/20 backdrop-blur-sm rounded-full p-4 hover:bg-white/30 transition-colors">
-                        <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M8 5v14l11-7z"/>
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                  
+  {/* Overlay (click-through) */}
+  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+    <div className="absolute bottom-4 left-4 right-4">
+      <div className="flex items-center gap-2 text-white text-sm">
+        <span className="bg-black/50 backdrop-blur-sm px-2 py-1 rounded-lg">
+          👁️ {video.views || 0}
+        </span>
+        <span className="bg-black/50 backdrop-blur-sm px-2 py-1 rounded-lg">
+          {new Date(video.createdAt).toLocaleDateString()}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  {/* Play button overlay (click-through so video remains clickable) */}
+  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+    <div className="bg-white/20 backdrop-blur-sm rounded-full p-4 hover:bg-white/30 transition-colors">
+      <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M8 5v14l11-7z" />
+      </svg>
+    </div>
+  </div>
+</div>
+
+
                   <div className="p-4">
                     <h3 className="text-lg font-semibold text-white truncate mb-2 group-hover:text-purple-300 transition-colors" title={video.title}>
                       {video.title}
                     </h3>
-                    
+
                     <p className="text-sm text-gray-400 line-clamp-2 mb-3">
                       {video.description}
                     </p>
-                    
+
                     <div className="flex items-center justify-between text-xs text-gray-500">
                       <div className="flex items-center gap-3">
                         <span className="flex items-center gap-1">
