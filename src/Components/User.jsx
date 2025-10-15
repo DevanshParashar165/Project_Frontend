@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Cookies from 'js-cookie';
 import { Link } from 'react-router-dom';
 
 function User() {
   const [data, setData] = useState(null);
   const [videoData, setVideoData] = useState([]);
   const [tweetData, setTweetData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(`https://devconnectbackend-9af9.onrender.com/api/v1/users/channel`, { withCredentials: true });
         setData(response.data);
-        console.log(response.data)
       } catch (error) {
         console.error('User Fetch Error:', error);
       }
@@ -46,86 +45,225 @@ function User() {
         setTweetData(tweetsRes.data?.data || []);
       } catch (error) {
         console.error('Tweet Fetch Error:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchTweets();
   }, []);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-white text-lg">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-950 to-blue-900 text-white px-4 py-6">
-      {data ? (
-        <>
-          {/* Cover Image */}
-          {
-            data.data.coverImage ? (<div className="w-full h-48 rounded-xl overflow-hidden shadow-xl">
-            <img src={data.data.coverImage?.url || data.data.coverImage} alt="Cover" className="w-full h-full object-cover" />
-          </div>) : (<div className="w-full h-48 rounded-xl overflow-hidden shadow-xl">
-           
-          </div>)
-          }
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
+      </div>
 
-          {/* Avatar & Info */}
-          <div className="flex flex-col items-center -mt-14 z-10">
-            <Link to="/dashboard">
-              <img src={data.data.avatar?.url||data.data.avatar} alt="Avatar" className="w-28 h-28 rounded-full border-4 border-white shadow-lg" />
-            </Link>
-            <h1 className="text-2xl font-bold mt-3">{data.data.fullname}</h1>
-            <p className="text-sm text-gray-300">@{data.data.username}</p>
-          </div>
+      <div className="relative z-10">
+        {data ? (
+          <>
+            {/* Cover Image Section */}
+            <div className="relative h-64 md:h-80 overflow-hidden">
+              {data.data.coverImage ? (
+                <div className="relative w-full h-full">
+                  <img 
+                    src={data.data.coverImage?.url || data.data.coverImage} 
+                    alt="Cover" 
+                    className="w-full h-full object-cover" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
+                </div>
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="text-6xl mb-4">🌟</div>
+                    <p className="text-gray-300">No cover image set</p>
+                  </div>
+                </div>
+              )}
+            </div>
 
-          {/* Stats */}
-          <div className="mt-6 text-center bg-white/10 backdrop-blur-md p-4 rounded-xl shadow-lg max-w-md mx-auto">
-            <p className="text-sm">📧 Email: {data.data.email}</p>
-            <p className="text-sm">👥 Subscribers: {data.data.subscribersCount}</p>
-            <p className="text-sm">🔔 Subscribed To: {data.data.channelsSubscribedToCount}</p>
-          </div>
-        </>
-      ) : (
-        <div className="text-center py-12 text-gray-300">Loading user info...</div>
-      )}
+            {/* Profile Section */}
+            <div className="relative px-6 pb-8">
+              <div className="max-w-4xl mx-auto">
+                {/* Avatar & Basic Info */}
+                <div className="flex flex-col md:flex-row items-center md:items-end gap-6 -mt-20 mb-8">
+                  <Link to="/dashboard" className="group">
+                    <div className="relative">
+                      <img 
+                        src={data.data.avatar?.url || data.data.avatar} 
+                        alt="Avatar" 
+                        className="w-32 h-32 rounded-3xl border-4 border-white/20 shadow-2xl object-cover group-hover:border-purple-500/50 transition-all duration-300" 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-purple-500/20 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="absolute -bottom-2 -right-2 bg-green-500 w-8 h-8 rounded-full border-4 border-slate-900 flex items-center justify-center">
+                        <span className="text-xs">✓</span>
+                      </div>
+                    </div>
+                  </Link>
+                  
+                  <div className="text-center md:text-left flex-1">
+                    <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                      {data.data.fullname}
+                    </h1>
+                    <p className="text-xl text-gray-300 mb-4">@{data.data.username}</p>
+                    
+                    {/* Stats */}
+                    <div className="flex flex-wrap justify-center md:justify-start gap-6 text-sm">
+                      <div className="bg-white/5 backdrop-blur-xl px-4 py-2 rounded-xl border border-white/10">
+                        <span className="text-purple-400 font-semibold">{data.data.subscribersCount}</span>
+                        <span className="text-gray-400 ml-1">Subscribers</span>
+                      </div>
+                      <div className="bg-white/5 backdrop-blur-xl px-4 py-2 rounded-xl border border-white/10">
+                        <span className="text-blue-400 font-semibold">{data.data.channelsSubscribedToCount}</span>
+                        <span className="text-gray-400 ml-1">Following</span>
+                      </div>
+                      <div className="bg-white/5 backdrop-blur-xl px-4 py-2 rounded-xl border border-white/10">
+                        <span className="text-green-400 font-semibold">{videoData.length}</span>
+                        <span className="text-gray-400 ml-1">Videos</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-      {/* Videos */}
-      <section className="py-10">
-        <h2 className="text-3xl font-bold text-center text-fuchsia-100 mb-6">📹 My Videos</h2>
-        {videoData.length === 0 ? (
-          <p className="text-center text-gray-400">No videos uploaded yet.</p>
-        ) : (
-          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {videoData.map(video => (
-              <div key={video._id} className="bg-white/10 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition">
-                <video controls className="w-full h-40 object-cover" src={video.videoFile} poster={video.thumbnail} />
-                <div className="p-3">
-                  <h3 className="font-semibold truncate text-fuchsia-100">{video.title}</h3>
-                  <p className="text-sm text-gray-300">{video.views} views</p>
-                  <p className="text-xs text-gray-400">{new Date(video.createdAt).toLocaleDateString()}</p>
+                {/* Contact Info */}
+                <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 mb-12">
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="text-2xl">📧</span>
+                    <h3 className="text-lg font-semibold">Contact Information</h3>
+                  </div>
+                  <p className="text-gray-300 flex items-center gap-2">
+                    <span className="text-blue-400">✉️</span>
+                    {data.data.email}
+                  </p>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* Tweets */}
-      <section className="py-6">
-        <h2 className="text-3xl font-bold text-center text-fuchsia-100 mb-6">🐦 My Tweets</h2>
-        {tweetData.length === 0 ? (
-          <p className="text-center text-gray-400">No tweets posted yet.</p>
+            </div>
+          </>
         ) : (
-          <div className="space-y-4 max-w-2xl mx-auto">
-            {tweetData.map((tweet, idx) => (
-              <div key={idx} className="bg-white/10 p-4 rounded-lg shadow hover:shadow-md transition">
-                <div className="flex items-center gap-3 mb-2">
-                  <img src={tweet.owner?.avatar?.url || tweet.owner?.avatar} alt="avatar" className="w-8 h-8 rounded-full" />
-                  <span className="font-bold text-sm text-white">@{tweet.owner?.username}</span>
-                </div>
-                <p className="text-white text-sm">{tweet.content}</p>
-                <p className="text-gray-400 text-xs mt-1">{new Date(tweet.createdAt).toLocaleString()}</p>
-              </div>
-            ))}
+          <div className="text-center py-16">
+            <div className="text-8xl mb-6">👤</div>
+            <p className="text-gray-400 text-xl">Loading user information...</p>
           </div>
         )}
-      </section>
+
+        {/* Content Sections */}
+        <div className="px-6 max-w-7xl mx-auto">
+          {/* Videos Section */}
+          <section className="mb-16">
+            <div className="flex items-center gap-3 mb-8">
+              <span className="text-3xl">🎥</span>
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent">
+                My Videos
+              </h2>
+              <div className="flex-1 h-px bg-gradient-to-r from-red-400/50 to-transparent"></div>
+            </div>
+            
+            {videoData.length === 0 ? (
+              <div className="text-center py-16 bg-white/5 rounded-3xl border border-white/10">
+                <div className="text-6xl mb-4">🎬</div>
+                <p className="text-gray-400 text-lg">No videos uploaded yet</p>
+                <Link 
+                  to="/dashboard" 
+                  className="inline-block mt-4 px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl font-medium hover:shadow-lg hover:scale-105 transition-all"
+                >
+                  Upload Your First Video
+                </Link>
+              </div>
+            ) : (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {videoData.map(video => (
+                  <div key={video._id} className="bg-white/5 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/10 hover:bg-white/10 transition-all group">
+                    <div className="relative">
+                      <video 
+                        controls 
+                        className="w-full h-48 object-cover" 
+                        src={video.videoFile} 
+                        poster={video.thumbnail} 
+                      />
+                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
+                          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-semibold truncate text-white mb-2">{video.title}</h3>
+                      <div className="flex items-center gap-4 text-sm text-gray-400">
+                        <span className="flex items-center gap-1">
+                          👁️ {video.views}
+                        </span>
+                        <span>{new Date(video.createdAt).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
+          {/* Tweets Section */}
+          <section className="mb-16">
+            <div className="flex items-center gap-3 mb-8">
+              <span className="text-3xl">🐦</span>
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                My Tweets
+              </h2>
+              <div className="flex-1 h-px bg-gradient-to-r from-blue-400/50 to-transparent"></div>
+            </div>
+            
+            {tweetData.length === 0 ? (
+              <div className="text-center py-16 bg-white/5 rounded-3xl border border-white/10">
+                <div className="text-6xl mb-4">🐦</div>
+                <p className="text-gray-400 text-lg">No tweets posted yet</p>
+                <Link 
+                  to="/dashboard" 
+                  className="inline-block mt-4 px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl font-medium hover:shadow-lg hover:scale-105 transition-all"
+                >
+                  Share Your First Tweet
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-4 max-w-3xl mx-auto">
+                {tweetData.map((tweet, idx) => (
+                  <div key={idx} className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition-all">
+                    <div className="flex items-start gap-4 mb-4">
+                      <img 
+                        src={tweet.owner?.avatar?.url || tweet.owner?.avatar} 
+                        alt="avatar" 
+                        className="w-12 h-12 rounded-xl object-cover border-2 border-white/10" 
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="font-semibold text-white">@{tweet.owner?.username}</span>
+                          <span className="text-gray-500 text-sm">•</span>
+                          <span className="text-gray-400 text-sm">{new Date(tweet.createdAt).toLocaleString()}</span>
+                        </div>
+                        <p className="text-white leading-relaxed">{tweet.content}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        </div>
+      </div>
     </div>
   );
 }

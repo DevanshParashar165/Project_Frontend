@@ -4,41 +4,40 @@ function UpdateAccount({ setActiveForm }) {
   const [selectionForm, setSelectionForm] = useState(false);
 
   return (
-    <div>
-      <div className="flex justify-evenly mt-6">
-        <button
-          className="mt-3 p-4 bg-green-700 text-xl rounded-4xl cursor-pointer hover:bg-green-800"
-          onClick={() => setSelectionForm(!selectionForm)}
-        >
-          Update Account
-        </button>
-      </div>
+    <div className="text-center">
+      <button
+        className="px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+        onClick={() => setSelectionForm(!selectionForm)}
+      >
+        ⚙️ Update Account
+      </button>
 
       {selectionForm && (
-        <div className="text-center mt-4">
-          <h1 className="text-xl font-bold mb-2">Select the Field You want to update</h1>
+        <div className="mt-8 bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 max-w-md mx-auto">
+          <h3 className="text-xl font-bold mb-6 text-white">Select what to update</h3>
 
-          <button
-            className="bg-green-600 rounded-4xl w-70 px-6 mt-3 mx-6 hover:bg-green-800"
-            onClick={() => setActiveForm('fullname')}
-          >
-            Fullname And Email
-          </button><br />
+          <div className="space-y-3">
+            <button
+              className="w-full px-6 py-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 text-white rounded-xl hover:bg-gradient-to-r hover:from-blue-500/30 hover:to-purple-500/30 transition-all"
+              onClick={() => setActiveForm('fullname')}
+            >
+              👤 Update Name & Email
+            </button>
 
+            <button
+              className="w-full px-6 py-3 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-white rounded-xl hover:bg-gradient-to-r hover:from-purple-500/30 hover:to-pink-500/30 transition-all"
+              onClick={() => setActiveForm('avatar')}
+            >
+              🖼️ Update Profile Picture
+            </button>
 
-          <button
-            className="bg-green-600 rounded-4xl w-70 px-6 mt-3 mx-6 hover:bg-green-800"
-            onClick={() => setActiveForm('avatar')}
-          >
-            Avatar
-          </button><br />
-
-          <button
-            className="bg-green-600 rounded-4xl w-70 px-6 mt-3 mx-6 hover:bg-green-800"
-            onClick={() => setActiveForm('cover')}
-          >
-            Cover Image
-          </button>
+            <button
+              className="w-full px-6 py-3 bg-gradient-to-r from-green-500/20 to-teal-500/20 border border-green-500/30 text-white rounded-xl hover:bg-gradient-to-r hover:from-green-500/30 hover:to-teal-500/30 transition-all"
+              onClick={() => setActiveForm('cover')}
+            >
+              🌄 Update Cover Image
+            </button>
+          </div>
         </div>
       )}
     </div>
