@@ -34,6 +34,18 @@ function User() {
     fetchVideos();
   }, []);
 
+  const handleFullScreen = async (videoElement) => {
+    if (!document.fullscreenElement) {
+      if (videoElement.requestFullscreen) {
+        await videoElement.requestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        await document.exitFullscreen();
+      }
+    }
+  };
+
   useEffect(() => {
     const fetchTweets = async () => {
       try {
@@ -79,10 +91,10 @@ function User() {
             <div className="relative h-64 md:h-80 overflow-hidden">
               {data.data.coverImage ? (
                 <div className="relative w-full h-full">
-                  <img 
-                    src={data.data.coverImage?.url || data.data.coverImage} 
-                    alt="Cover" 
-                    className="w-full h-full object-cover" 
+                  <img
+                    src={data.data.coverImage?.url || data.data.coverImage}
+                    alt="Cover"
+                    className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent"></div>
                 </div>
@@ -103,10 +115,10 @@ function User() {
                 <div className="flex flex-col md:flex-row items-center md:items-end gap-6 -mt-20 mb-8">
                   <Link to="/dashboard" className="group">
                     <div className="relative">
-                      <img 
-                        src={data.data.avatar?.url || data.data.avatar} 
-                        alt="Avatar" 
-                        className="w-32 h-32 rounded-3xl border-4 border-white/20 shadow-2xl object-cover group-hover:border-purple-500/50 transition-all duration-300" 
+                      <img
+                        src={data.data.avatar?.url || data.data.avatar}
+                        alt="Avatar"
+                        className="w-32 h-32 rounded-3xl border-4 border-white/20 shadow-2xl object-cover group-hover:border-purple-500/50 transition-all duration-300"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-purple-500/20 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       <div className="absolute -bottom-2 -right-2 bg-green-500 w-8 h-8 rounded-full border-4 border-slate-900 flex items-center justify-center">
@@ -114,13 +126,13 @@ function User() {
                       </div>
                     </div>
                   </Link>
-                  
+
                   <div className="text-center md:text-left flex-1">
                     <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                       {data.data.fullname}
                     </h1>
                     <p className="text-xl text-gray-300 mb-4">@{data.data.username}</p>
-                    
+
                     {/* Stats */}
                     <div className="flex flex-wrap justify-center md:justify-start gap-6 text-sm">
                       <div className="bg-white/5 backdrop-blur-xl px-4 py-2 rounded-xl border border-white/10">
@@ -171,13 +183,13 @@ function User() {
               </h2>
               <div className="flex-1 h-px bg-gradient-to-r from-red-400/50 to-transparent"></div>
             </div>
-            
+
             {videoData.length === 0 ? (
               <div className="text-center py-16 bg-white/5 rounded-3xl border border-white/10">
                 <div className="text-6xl mb-4">🎬</div>
                 <p className="text-gray-400 text-lg">No videos uploaded yet</p>
-                <Link 
-                  to="/dashboard" 
+                <Link
+                  to="/dashboard"
                   className="inline-block mt-4 px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl font-medium hover:shadow-lg hover:scale-105 transition-all"
                 >
                   Upload Your First Video
@@ -188,19 +200,20 @@ function User() {
                 {videoData.map(video => (
                   <div key={video._id} className="bg-white/5 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/10 hover:bg-white/10 transition-all group">
                     <div className="relative">
-                      <video 
-                        controls 
-                        className="w-full h-48 object-cover" 
-                        src={video.videoFile} 
-                        poster={video.thumbnail} 
+                      <video
+                        controls
+                        className="w-full h-48 object-cover"
+                        src={video.videoFile}
+                        poster={video.thumbnail}
+                        onClick={(e) => handleFullScreen(e.target)}
                       />
-                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      {/* <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <div className="bg-white/20 backdrop-blur-sm rounded-full p-3">
                           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z"/>
                           </svg>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                     <div className="p-4">
                       <h3 className="font-semibold truncate text-white mb-2">{video.title}</h3>
@@ -226,13 +239,13 @@ function User() {
               </h2>
               <div className="flex-1 h-px bg-gradient-to-r from-blue-400/50 to-transparent"></div>
             </div>
-            
+
             {tweetData.length === 0 ? (
               <div className="text-center py-16 bg-white/5 rounded-3xl border border-white/10">
                 <div className="text-6xl mb-4">🐦</div>
                 <p className="text-gray-400 text-lg">No tweets posted yet</p>
-                <Link 
-                  to="/dashboard" 
+                <Link
+                  to="/dashboard"
                   className="inline-block mt-4 px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl font-medium hover:shadow-lg hover:scale-105 transition-all"
                 >
                   Share Your First Tweet
@@ -243,10 +256,10 @@ function User() {
                 {tweetData.map((tweet, idx) => (
                   <div key={idx} className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition-all">
                     <div className="flex items-start gap-4 mb-4">
-                      <img 
-                        src={tweet.owner?.avatar?.url || tweet.owner?.avatar} 
-                        alt="avatar" 
-                        className="w-12 h-12 rounded-xl object-cover border-2 border-white/10" 
+                      <img
+                        src={tweet.owner?.avatar?.url || tweet.owner?.avatar}
+                        alt="avatar"
+                        className="w-12 h-12 rounded-xl object-cover border-2 border-white/10"
                       />
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
