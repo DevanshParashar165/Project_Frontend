@@ -317,9 +317,9 @@ function Dashboard() {
 
         {/* Upload Modal */}
         {showUploadForm && (
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="fixed top-20 right-0 left-0 bottom-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className="bg-slate-800/90 backdrop-blur-xl text-white p-8 rounded-3xl w-full max-w-md border border-white/10 shadow-2xl">
-              <div className="flex justify-between items-center mb-6">
+              <div className="flex justify-between items-center">
                 <h3 className="text-2xl font-bold">📤 Upload Video</h3>
                 <button
                   onClick={() => setShowUploadForm(false)}

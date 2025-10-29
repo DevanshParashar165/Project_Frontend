@@ -179,6 +179,35 @@ function Video() {
                       </div>
                       <span>{new Date(video.createdAt).toLocaleDateString()}</span>
                     </div>
+                    <div className="flex items-center gap-6 text-gray-400">
+                        <button className="flex items-center gap-2 hover:text-blue-400 transition-colors group/btn">
+                          <div className="p-2 rounded-full group-hover/btn:bg-blue-500/10 transition-colors">
+                            💬
+                          </div>
+                          <span className="text-sm">Reply</span>
+                        </button>
+                        
+                        <button className="flex items-center gap-2 hover:text-green-400 transition-colors group/btn">
+                          <div className="p-2 rounded-full group-hover/btn:bg-green-500/10 transition-colors">
+                            🔄
+                          </div>
+                          <span className="text-sm">Retweet</span>
+                        </button>
+                        
+                        <button className="flex items-center gap-2 hover:text-red-400 transition-colors group/btn">
+                          <div className="p-2 rounded-full group-hover/btn:bg-red-500/10 transition-colors">
+                            ❤️
+                          </div>
+                          <span className="text-sm">Like</span>
+                        </button>
+                        
+                        <button className="flex items-center gap-2 hover:text-purple-400 transition-colors group/btn">
+                          <div className="p-2 rounded-full group-hover/btn:bg-purple-500/10 transition-colors">
+                            📤
+                          </div>
+                          <span className="text-sm">Share</span>
+                        </button>
+                      </div>
                   </div>
                 </div>
               ))}

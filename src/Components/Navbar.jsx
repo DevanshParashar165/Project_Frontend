@@ -33,6 +33,8 @@ function Navbar() {
         {},
         { withCredentials: true }
       );
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
       setIsLoggedIn(false);
       setUser(null);
       navigate("/");
@@ -84,6 +86,7 @@ function Navbar() {
             {[
               ["🎥 Videos", "/videos"],
               ["🐦 Tweets", "/tweets"],
+              ["🎬 playlist","/playlist"],
               ["📊 Dashboard", "/dashboard"],
             ].map(([label, path]) => (
               <li key={path}>
@@ -133,7 +136,8 @@ function Navbar() {
             {[
               ["🎥 Videos", "/videos"],
               ["🐦 Tweets", "/tweets"],
-              ["📊 Dashboard", "/dashboard"],
+              ["🎬 playlist","/playlist"],
+              ["📊 Dashboard", "/dashboard"]
             ].map(([label, path]) => (
               <NavLink
                 key={path}

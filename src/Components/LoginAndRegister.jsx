@@ -46,6 +46,10 @@ function LoginAndRegister() {
       });
 
       console.log("Auth response:", response.data);
+      const accessToken = response.data?.data?.accessToken;
+      const refreshToken = response.data?.data?.refreshToken;
+      localStorage.setItem("accessToken",accessToken);
+      localStorage.setItem("refreshToken",refreshToken)
       navigate('/videos');
     } catch (error) {
       console.error('Error:', error);
