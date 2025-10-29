@@ -57,7 +57,6 @@ function PlaylistVideos() {
           {},
           { withCredentials: true }
         );
-        getPlaylistVideos();
       } catch (error) {
         console.error("Error updating views:", error);
       }
@@ -154,7 +153,7 @@ function PlaylistVideos() {
                     poster={video.thumbnail}
                     title={video.title}
                     onClick={(e) =>
-                      handleFullScreenAndViews(e.target, video._id)
+                    handleFullScreenAndViews(e.target, video._id)
                     }
                   />
                   <div className="absolute bottom-4 left-4 right-4 flex items-center gap-2 text-white text-sm">
