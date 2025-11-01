@@ -135,9 +135,9 @@ function Tweet() {
                         
                         <button className="flex items-center gap-2 hover:text-green-400 transition-colors group/btn">
                           <div className="p-2 rounded-full group-hover/btn:bg-green-500/10 transition-colors">
-                            🔄
+                            ▶️
                           </div>
-                          <span className="text-sm">Retweet</span>
+                          <span className="text-sm">Subscribe</span>
                         </button>
                         
                         <button className="flex items-center gap-2 hover:text-red-400 transition-colors group/btn">

@@ -33,8 +33,8 @@ function Navbar() {
         {},
         { withCredentials: true }
       );
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
+      // localStorage.removeItem("accessToken");
+      // localStorage.removeItem("refreshToken");
       setIsLoggedIn(false);
       setUser(null);
       navigate("/");

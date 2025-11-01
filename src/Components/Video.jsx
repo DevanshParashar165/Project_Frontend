@@ -24,6 +24,25 @@ function Video() {
     }
   };
 
+ const subscribeToggle = async (id) => {
+  try {
+    const response = await axios.post(
+      `https://devconnectbackend-9af9.onrender.com/api/v1/subscriptions/c/${id}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        withCredentials: true,
+      }
+    );
+    console.log("Subscribed/unsubscribed successfully:", response.data);
+  } catch (error) {
+    console.log("Error while subscribe toggle:", error);
+  }
+};
+
+
   useEffect(() => {
     getVideo();
   }, []);
@@ -187,11 +206,11 @@ function Video() {
                           <span className="text-sm">Reply</span>
                         </button>
                         
-                        <button className="flex items-center gap-2 hover:text-green-400 transition-colors group/btn">
+                        <button className="flex items-center gap-2 hover:text-green-400 transition-colors group/btn" onClick={()=>subscribeToggle(video.owner)}>
                           <div className="p-2 rounded-full group-hover/btn:bg-green-500/10 transition-colors">
-                            🔄
+                            ▶️
                           </div>
-                          <span className="text-sm">Retweet</span>
+                          <span className="text-sm">Subscribe</span>
                         </button>
                         
                         <button className="flex items-center gap-2 hover:text-red-400 transition-colors group/btn">
